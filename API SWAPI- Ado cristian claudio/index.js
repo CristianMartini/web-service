@@ -3,6 +3,7 @@ const axios = require('axios');
  const app = express();
 const PORT = process.env.PORT || 8080;
 const baseURL = 'https://swapi.dev/api';
+app.use(express.static('public'));
  // Rota para obter informações de um personagem específico
 app.get('/personagem/:id', async (req, res) => {
   try {
@@ -32,5 +33,10 @@ app.get('/planeta/:id', async (req, res) => {
 // Iniciar o servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
+
+
+
 });
+
+
 
