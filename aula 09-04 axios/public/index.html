@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de CEP</title>
+</head>
+<body>
+  <h1>Consulta de CEP</h1>
+  <label for="cepInput">Digite o CEP:</label>
+  <input type="text" id="cepInput" name="cep" required>
+  <button onclick="consultarCep()">Consultar</button>
+  <div id="resultado"></div>
+
+  <script>
+    async function consultarCep() {
+      const cep = document.getElementById('cepInput').value;
+      const response = await fetch(`/api/cep/${cep}`);
+      const data = await response.json();
+      const resultado = document.getElementById('resultado');
+      resultado.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+  </script>
+</body>
+</html>
+
