@@ -112,3 +112,14 @@ h3{
 .btn-container button {
     flex-grow: 1;
 }
+.alert-success {
+    color: #27ae60;
+    background-color: #e8f6e6;
+    border-color: #c3e6cb;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+a{
+    text-decoration: none;
+}
