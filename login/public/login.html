@@ -46,9 +46,18 @@
     </div>
     <script>
         document.getElementById('login').addEventListener('submit', function(event) {
-            var email = document.getElementById('email').value;
-            var senha = document.getElementById('senha').value;
-    
+        event.preventDefault();
+        var email = document.getElementById('email').value;
+        var senha = document.getElementById('senha').value;
+
+        axios.post('/login', { email, senha })
+            .then(function(response) {
+                window.location.href = '/calculate';
+            })
+            .catch(function(error) {
+                alert('Login falhou: ' + error.response.data);
+            });
+ 
             if (!email) {
                 alert('Por favor, insira o seu email.');
                 event.preventDefault(); // Impede o envio do formulário
