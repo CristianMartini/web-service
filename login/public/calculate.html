@@ -11,6 +11,7 @@
 <body>
     <div class="container my-5 p-5 bg-white rounded shadow">
         <div class="alert alert-success text-center">
+            Bem-vindo, <span id="username">Usuário</span>!
             <h3>Parabéns! Você fez login com sucesso.</h3>
         </div>
         <h1 class="text-center mb-4">Calcular Equação do Segundo Grau</h1>
@@ -34,6 +35,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.22.0/dist/axios.min.js"></script>
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Correção para verificar se o cookie com o nome do usuário existe
+    const cookieValue = document.cookie.split('; ').find(row => row.startsWith('username='));
+    if (cookieValue) {
+        const username = decodeURIComponent(cookieValue.split('=')[1]);
+        document.getElementById('username').textContent = username;
+    } else {
+        document.getElementById('username').textContent = 'Usuário não identificado'; // ou mantenha como "Usuário"
+    }
+});
+
         document.getElementById('calculateForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const a = document.getElementById('a').value;
