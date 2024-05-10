@@ -6,20 +6,17 @@ const fs = require('fs');
 
 const app = express();
 const PORT = 3001;
-
-// Caminho para o arquivo JSON que armazena as transações
 const DATA_FILE = path.join(__dirname, 'transactions.json');
 
 // Inicializa o arquivo de transações se não existir
 if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify({ transacoes: [] }));
+    fs.writeFileSync(DATA_FILE, JSON.stringify({ transacoes: [] }), 'utf8');
 }
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Configuração das sessões
 app.use(session({
     secret: 'segredo muito secreto',
     resave: false,
@@ -29,34 +26,36 @@ app.use(session({
 
 let usuarios = [];
 
-// Rota para servir as páginas estáticas de login e registro
-app.get('/register', (req, res) => res.sendFile(path.join(__dirname, 'public', 'register.html')));
-app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
 
-// Endpoint para login e registro de usuários
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 app.post('/login', (req, res) => {
     const { email, senha } = req.body;
     const usuario = usuarios.find(u => u.email === email && u.senha === senha);
     if (usuario) {
-        req.session.user = usuario; // Armazena usuário na sessão
+        req.session.user = usuario;
         res.redirect('/calculate');
     } else {
-        res.status(401).send('Credenciais inválidas.');
+        res.status(401).send('Credenciais inválidas ou usuário não registrado.');
     }
 });
 
 app.post('/register', (req, res) => {
     const { nome, email, senha } = req.body;
-    if (usuarios.some(u => u.email === email)) {
+    if (usuarios.find(u => u.email === email)) {
         return res.status(400).send('Email já cadastrado.');
     }
     const novoUsuario = { id: usuarios.length + 1, nome, email, senha };
     usuarios.push(novoUsuario);
-    req.session.user = novoUsuario; // Inicia sessão após o registro
+    req.session.user = novoUsuario;
     res.redirect('/calculate');
 });
 
-// Rota para servir a página de cálculo e mostrar o nome do usuário
 app.get('/calculate', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
@@ -65,12 +64,28 @@ app.get('/calculate', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'calculate.html'));
 });
 
-// Endpoint para adicionar transações de receitas e despesas
+app.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).send('Falha ao deslogar');
+        }
+        res.redirect('/register');
+    });
+});
+
+app.get('/get-transactions', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).send('Não autorizado.');
+    }
+    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const transacoesUsuario = data.transacoes.filter(t => t.usuarioId === req.session.user.id);
+    res.json(transacoesUsuario);
+});
+
 app.post('/add-transaction', (req, res) => {
     if (!req.session.user) {
         return res.status(401).send('Não autorizado.');
     }
-
     const { tipo, categoria, valor } = req.body;
     const transacao = { tipo, categoria, valor, usuarioId: req.session.user.id, data: new Date().toISOString() };
     const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
