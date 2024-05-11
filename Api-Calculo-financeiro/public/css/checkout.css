@@ -123,3 +123,7 @@ h3{
 a{
     text-decoration: none;
 }
+.logoutButton {
+    padding: 5px 250px;
+    
+}
