@@ -14,5 +14,6 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0"
   },
-  "description": ""
+  "description": "Projeto de Gerenciamento Financeiro\r Descrição\r Este projeto é uma aplicação web desenvolvida em Node.js, que permite aos usuários gerenciar suas finanças pessoais registrando receitas e despesas. O sistema permite o armazenamento e a consulta dessas transações, facilitando o controle financeiro.",
+  "devDependencies": {}
 }
