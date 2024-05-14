@@ -80,3 +80,34 @@ h3{
     font-weight: 600;
 
 }
+.button__Receita {
+    background-color: #005e83; /* Cor de fundo azul */
+    color: white; /* Cor do texto branco */
+    font-size: 16px; /* Tamanho da fonte */
+    padding: 10px 20px; /* Espaçamento interno: 10px vertical e 20px horizontal */
+    border: none; /* Sem borda */
+    border-radius: 8px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor do mouse como ponteiro para indicar que é clicável */
+    transition: background-color 0.3s; /* Transição suave para mudança de cor de fundo */
+}
+
+.button__Receita:hover {
+    background-color: #016d97; /* Cor de fundo mais escura quando o mouse está sobre o botão */
+}
+.button__Despesa{
+    background-color: #920000; /* Cor de fundo azul */
+    color: white; /* Cor do texto branco */
+    font-size: 16px; /* Tamanho da fonte */
+    padding: 10px 20px; /* Espaçamento interno: 10px vertical e 20px horizontal */
+    border: none; /* Sem borda */
+    border-radius: 8px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor do mouse como ponteiro para indicar que é clicável */
+    transition: background-color 0.3s; /* Transição suave para mudança de cor de fundo */
+}
+
+.button__Despesa:hover {
+    background-color: #b80b0b; /* Cor de fundo mais escura quando o mouse está sobre o botão */
+}
+select.form-control option[disabled][selected] {
+    color: #ccc; /* Define a cor do placeholder para cinza claro */
+}

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,11 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@0.22.0/dist/axios.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body> 
-    
-    <nav class="navbar navbar-expand-sm navbar-light bg-light">
-        <div class="container">
+
+<body>
+
+    <nav class="navbar navbar-light bg-light">
+        <div class="container mt-4">
             <h3><a class="navbar-brand" href="#">Gerenciamento Financeiro</a></h3>
             <p>Bem-vindo, <span id="username">Usuário</span>!</p>
             <div class="d-flex">
@@ -20,196 +22,130 @@
             </div>
         </div>
     </nav>
-          <div class="container mt-4 container-form">
-            <div class="mb-3 d-flex">
-                <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#modalReceita">Adicionar Receita</button>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDespesa">Adicionar Despesa</button>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Categoria</th>
-                        <th>Tipo</th>
-                        <th>Valor (R$)</th>
-                    </tr>
-                </thead>
-                <tbody id="transactionsList">
-                </tbody>
-                <tfoot>
-                    <tr class="table-success">
-                        <th colspan="2">Total Receitas:</th>
-                        <td id="totalReceitas">R$ 0</td>
-                    </tr>
-                    <tr class="table-danger">
-                        <th colspan="2">Total Despesas:</th>
-                        <td id="totalDespesas">R$ 0</td>
-                    </tr>
-                    <tr class="table-info">
-                        <th colspan="2">Saldo:</th>
-                        <td id="saldoFinal">R$ 0</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        </div>
-        <!-- Modais para Receitas e Despesas -->
-        <!-- Modal de Receita -->
-        <div class="modal fade" id="modalReceita" tabindex="-1" aria-labelledby="modalReceitaLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalReceitaLabel">Nova Receita</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="formReceita">
-                            <div class="mb-3">
-                                <label for="tipoReceita" class="form-label">Tipo de Receita</label>
-                                <select class="form-control" id="tipoReceita">
-                                    <option>Salário</option>
-                                    <option>Renda Extra</option>
-                                    <option>Mesada</option>
-                                    <option>Pró Labore</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="valorReceita" class="form-label">Valor</label>
-                                <input type="number" class="form-control" id="valorReceita" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Salvar</button>
-                        </form>
-                    </div>
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Notificação</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Modal de Despesa -->
-        <div class="modal fade" id="modalDespesa" tabindex="-1" aria-labelledby="modalDespesaLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalDespesaLabel">Nova Despesa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="formDespesa">
-                            <div class="mb-3">
-                                <label for="tipoDespesa" class="form-label">Tipo de Despesa</label>
-                                <select class="form-control" id="tipoDespesa">
-                                    <option>Alimentação</option>
-                                    <option>Moradia</option>
-                                    <option>Combustível</option>
-                                    <option>Estudo</option>
-                                    <option>Despesas Fixas</option>
-                                    <option>Despesas Pessoais</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="valorDespesa" class="form-label">Valor</label>
-                                <input type="number" class="form-control" id="valorDespesa" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Salvar</button>
-                        </form>
-                    </div>
+                <div class="toast-body">
+                    Aqui vai a mensagem.
                 </div>
             </div>
         </div>
     </div>
-</div>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="app.js"></script>
+
+    <div class="container mt-4 container-form">
+        <div class="mb-3 d-flex">
+            <button type="button" class="btn button__Receita me-2" data-bs-toggle="modal"
+                data-bs-target="#modalReceita">Adicionar Receita</button>
+            <button type="button" class="btn button__Despesa " data-bs-toggle="modal"
+                data-bs-target="#modalDespesa">Adicionar Despesa</button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <th>Tipo</th>
+                    <th>Categoria</th>
+                    <th>Valor (R$)</th>
+                </tr>
+            </thead>
+            <tbody id="transactionsList">
+            </tbody>
+            <tfoot>
+                <tr class="table-success">
+                    <th colspan="2">Total Receitas:</th>
+                    <td id="totalReceitas">R$ 0</td>
+                </tr>
+                <tr class="table-danger">
+                    <th colspan="2">Total Despesas:</th>
+                    <td id="totalDespesas">R$ 0</td>
+                </tr>
+                <tr class="table-info">
+                    <th colspan="2">Saldo:</th>
+                    <td id="saldoFinal">R$ 0</td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+    <!-- Modais para Receitas e Despesas -->
+    <!-- Modal de Receita -->
+    <div class="modal fade" id="modalReceita" tabindex="-1" aria-labelledby="modalReceitaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalReceitaLabel">Nova Receita</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formReceita">
+                        <div class="mb-3">
+                            <label for="tipoReceita" class="form-label">Tipo de Receita</label>
+                            <select class="form-control" id="tipoReceita" required>
+                                <option value="" disabled selected>Selecione o tipo de receita...</option>
+                                <option>Salário</option>
+                                <option>Renda Extra</option>
+                                <option>Presentes</option>
+                            </select>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="valorReceita" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="valorReceita" step="0.01" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Despesa -->
+    <div class="modal fade" id="modalDespesa" tabindex="-1" aria-labelledby="modalDespesaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDespesaLabel">Nova Despesa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formDespesa">
+                        <div class="mb-3">
+                            <label for="tipoDespesa" class="form-label">Tipo de Despesa</label>
+                            <select class="form-control" id="tipoDespesa" required>
+                                <option value="" disabled selected>Selecione o tipo de despesa...</option>
+                                <option>Alimentação</option>
+                                <option>Moradia</option>
+                                <option>Combustível</option>
+                                <option>Estudo</option>
+                                <option>Despesas Fixas</option>
+                                <option>Despesas Pessoais</option>
+                            </select>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="valorDespesa" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="valorDespesa" step="0.01" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="app.js"></script>
 
 
 
-       
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-    axios.get('/get-transactions')
-        .then(response => {
-            const transactions = response.data;
-            const table = document.getElementById('transactionsList');
-            transactions.forEach(t => {
-                const row = table.insertRow();
-                row.insertCell(0).textContent = t.categoria;
-                row.insertCell(1).textContent = t.tipo;
-                row.insertCell(2).textContent = `R$ ${parseFloat(t.valor).toFixed(2)}`;
-            });
-            updateTotals();  // Assegure-se de que essa função esteja definida para calcular totais
-        })
-        .catch(error => {
-            console.error('Erro ao carregar transações:', error);
-        });
-});
-          document.addEventListener('DOMContentLoaded', function() {
-        const cookieValue = document.cookie.split('; ').find(row => row.startsWith('username='));
-        if (cookieValue) {
-            const username = decodeURIComponent(cookieValue.split('=')[1]);
-            document.getElementById('username').textContent = username;
-        } else {
-            document.getElementById('username').textContent = 'Usuário não identificado';
-        }
-    });
-            
-            function addToTable(categoria, tipo, valor) {
-                const table = document.getElementById('transactionsList');
-                const row = table.insertRow();
-                row.insertCell(0).textContent = categoria;
-                row.insertCell(1).textContent = tipo;
-                row.insertCell(2).textContent = `R$ ${valor.toFixed(2)}`;
-                updateTotals();
-            }
-            
-            function updateTotals() {
-                const rows = document.querySelectorAll('#transactionsList tr');
-                let totalReceitas = 0;
-                let totalDespesas = 0;
-                rows.forEach(row => {
-                    const tipo = row.cells[1].textContent;
-                    const valor = parseFloat(row.cells[2].textContent.replace('R$ ', ''));
-                    if (tipo === 'Receita') {
-                        totalReceitas += valor;
-                    } else {
-                        totalDespesas += valor;
-                    }
-                });
-                document.getElementById('totalReceitas').textContent = `R$ ${totalReceitas.toFixed(2)}`;
-                document.getElementById('totalDespesas').textContent = `R$ ${totalDespesas.toFixed(2)}`;
-                document.getElementById('saldoFinal').textContent = `R$ ${(totalReceitas - totalDespesas).toFixed(2)}`;
-            }
-            
-            document.getElementById('formReceita').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const tipo = document.getElementById('tipoReceita').value;
-                const valor = parseFloat(document.getElementById('valorReceita').value);
-                axios.post('/add-transaction', { tipo: 'Receita', categoria: tipo, valor: valor })
-                    .then(function(response) {
-                        alert('Receita adicionada com sucesso!');
-                        $('#modalReceita').modal('hide');
-                        addToTable(tipo, 'Receita', valor);
-                    })
-                    .catch(function(error) {
-                        alert('Erro ao adicionar receita: ' + (error.response ? error.response.data : 'Erro desconhecido'));
-                    });
-            });
-            
-            document.getElementById('formDespesa').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const tipo = document.getElementById('tipoDespesa').value;
-                const valor = parseFloat(document.getElementById('valorDespesa').value);
-                axios.post('/add-transaction', { tipo: 'Despesa', categoria: tipo, valor: valor })
-                    .then(function(response) {
-                        alert('Despesa adicionada com sucesso!');
-                        $('#modalDespesa').modal('hide');
-                        addToTable(tipo, 'Despesa', valor);
-                    })
-                    .catch(function(error) {
-                        alert('Erro ao adicionar despesa: ' + (error.response ? error.response.data : 'Erro desconhecido'));
-                    });
-            });
-            </script>
-            
-    
+
+
 </body>
+
 </html>
