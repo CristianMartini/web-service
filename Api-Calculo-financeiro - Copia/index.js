@@ -89,14 +89,28 @@ app.post('/add-transaction', (req, res) => {
     if (!req.session.user) {
         return res.status(401).send('Não autorizado.');
     }
-    const { tipo, categoria, valor } = req.body;
-    const transacao = { tipo, categoria, valor, usuarioId: req.session.user.id, data: new Date().toISOString() };
-    const data = JSON.parse(fs.readFileSync(TRANSACTION_DATA_FILE, 'utf8'));
-    data.transacoes.push(transacao);
-    fs.writeFileSync(TRANSACTION_DATA_FILE, JSON.stringify(data), 'utf8');
+
+    // Extraindo todos os valores necessários do corpo da requisição
+    const { tipo, categoria, valor, data } = req.body;
+
+    // Criando a transação com a data fornecida ou a data atual como fallback
+    const transacao = {
+        tipo,
+        categoria,
+        valor: parseFloat(valor), // Certifique-se de converter o valor para float
+        usuarioId: req.session.user.id,
+        data: data ? data : new Date().toISOString()
+    };
+
+    // Adicionando a transação ao array e salvando no arquivo
+    const dataFile = JSON.parse(fs.readFileSync(TRANSACTION_DATA_FILE, 'utf8'));
+    dataFile.transacoes.push(transacao);
+    fs.writeFileSync(TRANSACTION_DATA_FILE, JSON.stringify(dataFile), 'utf8');
+
     res.send('Transação adicionada com sucesso!');
 });
 
+
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}/login`);
+    console.log(`Servidor rodando em http://localhost:${PORT}/register`);
 });

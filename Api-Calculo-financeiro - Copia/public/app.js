@@ -1,24 +1,17 @@
-
-
 document.addEventListener('DOMContentLoaded', function () {
     axios.get('/get-transactions')
         .then(response => {
             const transactions = response.data;
             const table = document.getElementById('transactionsList');
             transactions.forEach(t => {
-                const row = table.insertRow();
-                row.insertCell(0).textContent = t.categoria;
-                row.insertCell(1).textContent = t.tipo;
-                row.insertCell(2).textContent = `R$ ${parseFloat(t.valor).toFixed(2)}`;
-
+                addToTable(t.tipo, t.categoria, t.valor, t.data);
             });
-            updateTotals();  // Assegure-se de que essa função esteja definida para calcular totais
+            updateTotals();
         })
         .catch(error => {
             console.error('Erro ao carregar transações:', error);
         });
-});
-document.addEventListener('DOMContentLoaded', function () {
+
     const cookieValue = document.cookie.split('; ').find(row => row.startsWith('username='));
     if (cookieValue) {
         const username = decodeURIComponent(cookieValue.split('=')[1]);
@@ -28,12 +21,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-function addToTable(categoria, tipo, valor) {
+function addToTable(tipo, categoria, valor, data) {
     const table = document.getElementById('transactionsList');
     const row = table.insertRow();
-    row.insertCell(0).textContent = categoria;
-    row.insertCell(1).textContent = tipo;
-    row.insertCell(2).textContent = `R$ ${valor.toFixed(2)}`;
+    row.insertCell(0).textContent = tipo; // Tipo
+    row.insertCell(1).textContent = categoria; // Categoria
+    // Corrigindo a exibição da data
+    const dataCorrigida = new Date(data);
+    dataCorrigida.setMinutes(dataCorrigida.getMinutes() + dataCorrigida.getTimezoneOffset());
+    row.insertCell(2).textContent = dataCorrigida.toLocaleDateString('pt-BR'); // Exibindo data corrigida
+
+    row.insertCell(3).textContent = `R$ ${parseFloat(valor).toFixed(2)}`; // Valor (R$)
     updateTotals();
 }
 
@@ -42,11 +40,11 @@ function updateTotals() {
     let totalReceitas = 0;
     let totalDespesas = 0;
     rows.forEach(row => {
-        const tipo = row.cells[1].textContent;
-        const valor = parseFloat(row.cells[2].textContent.replace('R$ ', ''));
+        const tipo = row.cells[0].textContent;  // Tipo está na primeira célula
+        const valor = parseFloat(row.cells[3].textContent.replace('R$ ', ''));  // Valor está na quarta célula
         if (tipo === 'Receita') {
             totalReceitas += valor;
-        } else {
+        } else if (tipo === 'Despesa') {
             totalDespesas += valor;
         }
     });
@@ -55,62 +53,36 @@ function updateTotals() {
     document.getElementById('saldoFinal').textContent = `R$ ${(totalReceitas - totalDespesas).toFixed(2)}`;
 }
 
-// Configuração inicial do Toast
-const toastEl = document.getElementById('toastMessage');
-const toast = new bootstrap.Toast(toastEl, {
-    autohide: true,
-    delay: 5000  // Toast desaparece após 5 segundos
-});
-
-// Função para mostrar toasts
-function showToast(message) {
-    toastEl.querySelector('.toast-body').textContent = message;
-    toast.show();
-}
-
 // Adicionar receita
+
 document.getElementById('formReceita').addEventListener('submit', function (event) {
     event.preventDefault();
-    const tipo = document.getElementById('tipoReceita');
+    const tipo = document.getElementById('tipoReceita').value;
     const valor = parseFloat(document.getElementById('valorReceita').value);
-    if (tipo.value === "") {
-        tipo.setCustomValidity("Por favor, selecione o tipo de receita.");
-    } else {
-        tipo.setCustomValidity(""); // Limpa a mensagem de validação se tudo estiver correto
-    }
-    if (!this.checkValidity()) {
-        this.reportValidity(); // Mostra a mensagem de validação
-        return;
-    }
-    axios.post('/add-transaction', { tipo: 'Receita', categoria: tipo.value, valor: valor })
-        .then(function (response) {
-            showToast('Receita adicionada com sucesso!');
+    const data = document.getElementById('dataReceita').value;
+    axios.post('/add-transaction', { tipo: 'Receita', categoria: tipo, valor, data })
+        .then(response => {
+            addToTable('Receita', tipo, valor, data);
             $('#modalReceita').modal('hide');
-            addToTable(tipo.value, 'Receita', valor);
+            showToast('Receita adicionada com sucesso!');
         })
-        .catch(function (error) {
+        .catch(error => {
+            console.error('Erro ao adicionar receita:', error);
             showToast('Erro ao adicionar receita: ' + (error.response ? error.response.data : 'Erro desconhecido'));
         });
+
 });
 
 document.getElementById('formDespesa').addEventListener('submit', function (event) {
     event.preventDefault();
-    const tipo = document.getElementById('tipoDespesa');
+    const tipo = document.getElementById('tipoDespesa').value;
     const valor = parseFloat(document.getElementById('valorDespesa').value);
-    if (tipo.value === "") {
-        tipo.setCustomValidity("Por favor, selecione o tipo de despesa.");
-    } else {
-        tipo.setCustomValidity("");
-    }
-    if (!this.checkValidity()) {
-        this.reportValidity();
-        return;
-    }
-    axios.post('/add-transaction', { tipo: 'Despesa', categoria: tipo.value, valor: valor })
+    const data = document.getElementById('dataDespesa').value;
+    axios.post('/add-transaction', { tipo: 'Despesa', categoria: tipo, valor, data })
         .then(function (response) {
             showToast('Despesa adicionada com sucesso!');
             $('#modalDespesa').modal('hide');
-            addToTable(tipo.value, 'Despesa', valor);
+            addToTable('Despesa', tipo, valor, data);
         })
         .catch(function (error) {
             showToast('Erro ao adicionar despesa: ' + (error.response ? error.response.data : 'Erro desconhecido'));
@@ -118,9 +90,24 @@ document.getElementById('formDespesa').addEventListener('submit', function (even
 });
 
 
+
+// Configuração inicial do Toast
+document.addEventListener('DOMContentLoaded', function () {
+    const toastEl = document.getElementById('toastMessage');
+    const toast = new bootstrap.Toast(toastEl, {
+        autohide: true,
+        delay: 5000
+    });
+
+    window.showToast = function (message) {
+        toastEl.querySelector('.toast-body').textContent = message;
+        toast.show();
+    }
+});
+
 // Limpar campos ao abrir os modais
 $('#modalReceita, #modalDespesa').on('show.bs.modal', function (event) {
     this.querySelector('select').value = ""; // Reseleciona o placeholder
     this.querySelector('input[type="number"]').value = ""; // Limpa o campo de valor
+    this.querySelector('input[type="date"]').value = ""; // Limpa o campo de data
 });
-
