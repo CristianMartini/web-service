@@ -1,52 +1,53 @@
-# README - Gerenciamento Financeiro
+# Projeto de Gerenciamento Financeiro
 
-## Introdução
-Este projeto de gerenciamento financeiro é uma aplicação web que facilita a gestão de receitas e despesas pessoais. Com uma interface intuitiva, os usuários podem adicionar, visualizar e gerenciar suas transações financeiras, monitorando assim a saúde financeira de maneira eficaz e organizada.
-
-## Funcionalidades
-- **Cadastro de Usuários:** Permite que novos usuários criem uma conta no sistema.
-- **Login e Autenticação:** Acesso seguro para usuários cadastrados.
-- **Adicionar Transações:** Usuários podem registrar suas receitas e despesas.
-- **Visualização de Transações:** As transações são listadas em uma tabela, permitindo uma visualização clara das finanças.
-- **Cálculo Automático de Totais:** O sistema calcula automaticamente as somas de receitas, despesas e o saldo geral.
+## Descrição Geral
+Este projeto é uma aplicação web desenvolvida para permitir aos usuários gerenciar suas finanças pessoais de forma eficaz. Através desta aplicação, os usuários podem registrar suas receitas e despesas, visualizar um histórico de transações e obter um resumo de sua situação financeira atual.
 
 ## Tecnologias Utilizadas
-- **Node.js:** Ambiente de execução JavaScript para o servidor.
-- **Express.js:** Framework para aplicativos web Node.js, facilitando a criação de rotas e APIs.
-- **Bootstrap:** Framework para desenvolvimento de interfaces responsivas.
-- **Axios:** Biblioteca JavaScript para realizar requisições HTTP.
-- **bcrypt.js:** Biblioteca para hashing de senhas.
-- **express-session:** Middleware para gerenciamento de sessões em Node.js.
+- **Node.js**: Utilizado como ambiente de execução do lado do servidor.
+- **Express**: Framework web utilizado para construir o servidor backend, facilitando a criação de rotas e a gestão de requisições HTTP.
+- **Bootstrap**: Framework CSS utilizado para desenvolver uma interface limpa e responsiva.
+- **Axios**: Biblioteca JavaScript usada para realizar requisições HTTP a partir do navegador, facilitando a comunicação com o servidor.
+- **bcrypt.js**: Biblioteca utilizada para a criptografia de senhas, garantindo segurança no armazenamento das credenciais dos usuários.
 
-## Estrutura de Diretórios
-- **index.js:** Script principal do servidor, configurando rotas e middleware.
-- **public/:** Diretório para arquivos estáticos como HTML, CSS e JavaScript.
-- **data/**
-  - **transactions.json:** Armazenamento das transações dos usuários.
-  - **users.json:** Dados dos usuários registrados.
+## Estrutura do Projeto
 
-## Detalhamento das Funcionalidades
+### Servidor (index.js)
+O arquivo `index.js` configura e executa o servidor Express que lida com todas as requisições HTTP. Aqui estão alguns componentes chave deste arquivo:
 
-### Autenticação
-A autenticação é realizada através de uma combinação de e-mail e senha. A senha é armazenada de forma segura utilizando a biblioteca `bcrypt`, que aplica um hash à senha antes de salvá-la no arquivo `users.json`.
+#### Inicialização e Configuração
+- **Express e Middleware**: Configuração do servidor com middleware necessário para parsear respostas JSON e gerenciar sessões.
+- **Banco de Dados Simulado**: Utilização de arquivos JSON (`transactions.json` e `users.json`) para simular um banco de dados armazenando usuários e transações.
 
-### Registro e Login
-Os endpoints `/register` e `/login` tratam, respectivamente, do registro de novos usuários e do processo de login. Ambos utilizam métodos `POST` para receber dados do usuário, que são validados e processados. Se bem-sucedidos, redirecionam o usuário para a página principal de gerenciamento financeiro.
+#### Rotas e Endpoints
+- **/register e /login**: Rotas para registro e login de usuários, incluindo criptografia de senha.
+- **/calculate**: Rota que serve a página principal após o usuário logar, mostrando transações e opções de gerenciamento.
+- **/add-transaction**: Endpoint para adicionar transações ao 'banco de dados'. As transações são salvas com um identificador único, categoria, tipo, valor e data.
 
-### Gerenciamento de Sessões
-Utilizando `express-session`, o sistema cria uma sessão para cada usuário que se autentica. Isso permite que o usuário acesse suas informações sem precisar se autenticar a cada nova requisição.
+#### Funções Auxiliares
+- **initDataFile**: Verifica se o arquivo de dados existe; se não, cria um novo arquivo com dados padrão.
+- **getNextTransactionId**: Gera um ID único para cada nova transação, assegurando que cada entrada no banco de dados seja única.
 
-### Transações Financeiras
-A adição de transações é feita através de um modal que solicita informações como tipo (receita ou despesa), categoria, valor e data. Esses dados são enviados ao servidor via `Axios` e salvos em `transactions.json`.
+### Armazenamento e Apresentação de Dados
+Dados são armazenados em arquivos JSON no servidor. Quando um usuário realiza uma ação que requer interação com o banco de dados (como registrar ou adicionar uma transação), o servidor lê e atualiza esses arquivos.
 
+- **Transações**: Armazenadas com informações detalhadas, facilitando relatórios e análises financeiras.
+- **Usuários**: Informações de usuário são armazenadas de forma segura, usando criptografia para senhas.
 
-### Visualização e Cálculos
-As transações são exibidas em uma tabela na página `calculate.html`, onde scripts JavaScript processam e exibem os totais de receitas, despesas e o saldo final. A função `updateTotals` percorre as transações acumulando os valores conforme o tipo para atualizar os totais exibidos.
+### Screenshots
+Aqui estão alguns visuais da aplicação:
 
-## Configuração e Execução
+#### Página de Login
+![Página de Login](url_para_imagem_de_login)
 
-### Instalação de Dependências
-No diretório do projeto, execute:
+#### Dashboard
+![Dashboard](url_para_imagem_do_dashboard)
+
+## Instalação e Execução
+Para instalar e executar o projeto localmente, siga os passos abaixo:
+
 ```bash
+git clone <URL_DO_REPOSITORIO>
+cd <NOME_DO_DIRETORIO>
 npm install
-
+npm start
